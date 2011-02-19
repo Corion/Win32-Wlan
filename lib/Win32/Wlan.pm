@@ -3,6 +3,7 @@ use strict;
 use Carp qw(croak);
 
 use Win32::API; # sorry, 64bit users
+use Encode qw(decode);
 
 #DWORD WINAPI WlanOpenHandle(
 #  __in        DWORD dwClientVersion,
@@ -67,9 +68,14 @@ sub WlanEnumInterfaces {
     #warn "$count interfaces";
     my @res;
     if ($count) {
-        my $data = unpack "P" . (8+$count*(16+256+1));
-        my @items = unpack "x8 (a16 A256 a)$count", $data;
+        my $data = unpack "P" . (8+$count*(16+512+4)), $interfaces;
+        my @items = unpack "x8 (a16 a512 V)$count", $data;
         while (@items) {
+            # First element is the GUUID of the interface
+            # Name is in 16bit UTF
+            $items[1] = decode('UTF-16LE' => $items[1]);
+            $items[1] =~ s/\0+$//;
+            # The third element is the status of the interface
             push @res, [splice @items, 0, 3];
         };
     };
