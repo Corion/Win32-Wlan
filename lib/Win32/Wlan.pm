@@ -6,6 +6,28 @@ use Win32::API; # sorry, 64bit users
 use Encode qw(decode);
 use List::MoreUtils qw(zip);
 
+use Exporter 'import';
+
+use vars qw($VERSION $available %API @signatures);
+$VERSION = '0.01';
+
+sub Zero() { "\0\0\0\0" };
+# just in case we ever get a 64bit Win32::API
+# Zero will have to return 8 bytes of zeroes
+
+BEGIN {
+    @signatures = (
+        ['WlanOpenHandle' => 'IIPP' => 'I'],
+        ['WlanCloseHandle' => 'II' => 'I'],
+        ['WlanFreeMemory' => 'I' => 'I'],
+        ['WlanEnumInterfaces' => 'IIP' => 'I'],
+        ['WlanQueryInterface' => 'IPIIPPI' => 'I'],
+        ['WlanGetAvailableNetworkList' => 'IPIIP' => 'I'],
+    );
+
+    @EXPORT_OK = map { $_->[0] } @signatures;
+};
+
 use constant {
   not_ready               => 0,
   connected               => 1,
@@ -16,24 +38,6 @@ use constant {
   discovering             => 6,
   authenticating          => 7 
 };
-
-use Exporter 'import';
-
-use vars qw($VERSION $available %API @signatures);
-$VERSION = '0.01';
-
-sub Zero() { "\0\0\0\0" };
-# just in case we ever get a 64bit Win32::API
-# Zero will have to return 8 bytes of zeroes
-
-@signatures = (
-    ['WlanOpenHandle' => 'IIPP' => 'I'],
-    ['WlanCloseHandle' => 'II' => 'I'],
-    ['WlanFreeMemory' => 'I' => 'I'],
-    ['WlanEnumInterfaces' => 'IIP' => 'I'],
-    ['WlanQueryInterface' => 'IPIIPPI' => 'I'],
-    ['WlanGetAvailableNetworkList' => 'IPIIP' => 'I'],
-);
 
 if (! load_functions()) {
     # Wlan functions are not available
@@ -200,10 +204,50 @@ __END__
 
 Win32::Wlan - Access to the Win32 WLAN API
 
+=head1 SYNOPSIS
+
+    use Win32::Wlan qw(
+    );
+    if ($Win32::Wlan::available) {
+        my $handle = Win32::Wlan::WlanOpenHandle();
+        
+
+    } else {
+        print "No Wlan detected\n";
+    };
+
 =head1 SEE ALSO
 
 Windows Native Wifi Reference
 
 L<http://msdn.microsoft.com/en-us/library/ms706274%28v=VS.85%29.aspx>
+
+=head1 REPOSITORY
+
+The public repository of this module is 
+L<http://github.com/Corion/Win32-Wlan>.
+
+=head1 SUPPORT
+
+The public support forum of this module is
+L<http://perlmonks.org/>.
+
+=head1 BUG TRACKER
+
+Please report bugs in this module via the RT CPAN bug queue at
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=Win32-Wlan>
+or via mail to L<win32-wlan-Bugs@rt.cpan.org>.
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2011-2011 by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
 
 =cut
