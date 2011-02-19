@@ -6,6 +6,19 @@ use Win32::API; # sorry, 64bit users
 use Encode qw(decode);
 use List::MoreUtils qw(zip);
 
+use constant {
+  not_ready               => 0,
+  connected               => 1,
+  ad_hoc_network_formed   => 2,
+  disconnecting           => 3,
+  disconnected            => 4,
+  associating             => 5,
+  discovering             => 6,
+  authenticating          => 7 
+};
+
+use Exporter 'import';
+
 use vars qw($VERSION $available %API @signatures);
 $VERSION = '0.01';
 
