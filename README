@@ -1,0 +1,43 @@
+NAME
+    Win32::Wlan - Access to the Win32 WLAN API
+
+SYNOPSIS
+        use Win32::Wlan qw(
+        );
+        if ($Win32::Wlan::available) {
+            my $handle = Win32::Wlan::WlanOpenHandle();
+            my @interfaces = Win32::Wlan::WlanEnumInterfaces($handle);
+            my $ih = $interfaces[0]->[0];
+            my $info = Win32::Wlan::WlanQueryCurrentConnection($handle,$ih);
+            print "Connected to $info{ profile_name }\n";        
+
+        } else {
+            print "No Wlan detected (or switched off)\n";
+        };
+
+SEE ALSO
+    Windows Native Wifi Reference
+
+    http://msdn.microsoft.com/en-us/library/ms706274%28v=VS.85%29.aspx
+
+REPOSITORY
+    The public repository of this module is
+    http://github.com/Corion/Win32-Wlan.
+
+SUPPORT
+    The public support forum of this module is http://perlmonks.org/.
+
+BUG TRACKER
+    Please report bugs in this module via the RT CPAN bug queue at
+    https://rt.cpan.org/Public/Dist/Display.html?Name=Win32-Wlan or via mail
+    to win32-wlan-Bugs@rt.cpan.org.
+
+AUTHOR
+    Max Maischein `corion@cpan.org'
+
+COPYRIGHT (c)
+    Copyright 2011-2011 by Max Maischein `corion@cpan.org'.
+
+LICENSE
+    This module is released under the same terms as Perl itself.
+

@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 
 # I should maybe use something like Shipwright...
 regen_README('lib/Win32/Wlan.pm');
-regen_EXAMPLES();
+#regen_EXAMPLES();
 
 WriteMakefile1(
     MIN_PERL_VERSION => '5.006',
