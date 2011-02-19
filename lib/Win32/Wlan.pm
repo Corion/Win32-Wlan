@@ -123,26 +123,43 @@ sub WlanGetAvailableNetworkList {
     $API{ WlanGetAvailableNetworkList }->Call($handle,$interface,$flags,0,$list) == 0
         or croak $^E;
                                                 # name ssid_len ssid bss  bssids connectable
-    my @items = _unpack_count_array($list, join '', 
-                                    'a512', # name
-                                    'V',    # ssid_len
-                                    'a32',  # ssid
-                                    'V',    # bss
-                                    'V',    # bssids
-                                    'V',    # connectable
-                                    'V',    # notConnectableReason,
-                                    'V',    # PhysTypes
-                                    'V32',  # PhysType elements
-                                    'V',    # More PhysTypes
-                                    
-                                    
-                                    , 512+4+32+4+4+4);
+    my @items = _unpack_counted_array($list, join( '', 
+        'a512', # name
+        'V',    # ssid_len
+        'a32',  # ssid
+        'V',    # bss
+        'V',    # bssids
+        'V',    # connectable
+        'V',    # notConnectableReason,
+        'V',    # PhysTypes
+        'V8',   # PhysType elements
+        'V',    # More PhysTypes
+        'V',    # wlanSignalQuality from 0=-100dbm to 100=-50dbm, linear
+        'V',    # bSecurityEnabled;
+        'V',    # dot11DefaultAuthAlgorithm;
+        'V',    # dot11DefaultCipherAlgorithm;
+        'V',    # dwFlags
+        'V',    # dwReserved;
+    ), 512+4+32+20*4);
     for (@items) {
-        # First element is the GUUID of the interface
-        # Name is in 16bit UTF
-        $_->[1] = decode('UTF-16LE' => $_->[1]);
-        $_->[1] =~ s/\0+$//;
-        # The third element is the status of the interface
+        my %info;
+        @info{qw( name ssid_len ssid bss bssids connectable notConnectableReason
+                  phystype_count phystypes has_more_phystypes
+                  signal_quality
+                  security_enabled
+                  dot11_default_auth_algorithm
+                  dot11_default_cipher_algorithm
+                  flags
+                  reserved
+        )} = @$_;
+        
+        # Decode the elements
+        $info{ ssid } = substr( $info{ ssid }, 0, $info{ ssid_len });
+        $info{ name } = decode('UTF-16LE', $res{ name });
+        $info{ name } =~ s/\0+$//;
+        splice $info{ phystypes }, $info{ phystype_count };
+
+        $_ = \%info;
     };
     
     $list = unpack 'V', $list;
