@@ -26,6 +26,7 @@ sub Zero() { "\0\0\0\0" };
     ['WlanFreeMemory' => 'I' => 'I'],
     ['WlanEnumInterfaces' => 'IIP' => 'I'],
     ['WlanQueryInterface' => 'IPIIPPI' => 'I'],
+    ['WlanGetAvailableNetworkList' => 'IPIIP' => 'I'],
 );
 
 if (! load_functions()) {
@@ -58,31 +59,38 @@ sub WlanFreeMemory {
     $API{ WlanFreeMemory }->Call($block);
 };
 
+sub _unpack_count_array {
+    my ($pointer,$template,$size) = @_;
+    my $info = unpack 'P8', $pointer;
+    my ($count,$curr) = unpack 'VV', $info;
+    my $data = unpack "P" . (8+$count*$size), $pointer;
+    my @items = unpack "x8 ($template)$count", $data;
+    my $elements_per_item = @items / $count;
+    my @res;
+    while (@items) {
+        push @res, [splice @items, 0, $elements_per_item ]
+    };
+    @res
+};
+
 sub WlanEnumInterfaces {
     croak "Wlan functions are not available" unless $available;
     my ($handle) = @_;
     my $interfaces = Zero;
     $API{ WlanEnumInterfaces }->Call($handle,0,$interfaces) == 0
         or croak $^E;
-    my $info = unpack 'P8', $interfaces;
-    my ($count,$curr) = unpack 'VV', $info;
-    my @res;
-    if ($count) {
-        my $data = unpack "P" . (8+$count*(16+512+4)), $interfaces;
-        my @items = unpack "x8 (a16 a512 V)$count", $data;
-        while (@items) {
-            # First element is the GUUID of the interface
-            # Name is in 16bit UTF
-            $items[1] = decode('UTF-16LE' => $items[1]);
-            $items[1] =~ s/\0+$//;
-            # The third element is the status of the interface
-            push @res, [splice @items, 0, 3];
-        };
+    my @items = _unpack_count_array($interfaces,'a16 a512 V',16+512+4);
+    for (@items) {
+        # First element is the GUUID of the interface
+        # Name is in 16bit UTF
+        $_->[1] = decode('UTF-16LE' => $_->[1]);
+        $_->[1] =~ s/\0+$//;
+        # The third element is the status of the interface
     };
     
     $interfaces = unpack 'V', $interfaces;
     WlanFreeMemory($interfaces);
-    @res
+    @items
 };
 
 sub WlanQueryInterface {
@@ -113,6 +121,27 @@ sub WlanQueryCurrentConnection {
     $res{ profile_name } =~ s/\0+$//;
     
     \%res
+}
+
+sub WlanGetAvailableNetworkList {
+    my ($handle,$interface,$flags) = @_;
+    $flags ||= 0;
+    my $list = Zero;
+    $API{ WlanGetAvailableNetworkList }->Call($handle,$interface,$flags,0,$list) == 0
+        or croak $^E;
+                                                # name ssid_len ssid bss  bssids connectable
+    my @items = _unpack_count_array($list,'a512   V       a32  V    V      V           ', 512+4+32+4+4+4);
+    for (@items) {
+        # First element is the GUUID of the interface
+        # Name is in 16bit UTF
+        $_->[1] = decode('UTF-16LE' => $_->[1]);
+        $_->[1] =~ s/\0+$//;
+        # The third element is the status of the interface
+    };
+    
+    $list = unpack 'V', $list;
+    WlanFreeMemory($list);
+    @items
 }
 
 sub load_functions {
