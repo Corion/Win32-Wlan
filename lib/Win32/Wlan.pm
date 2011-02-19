@@ -206,8 +206,7 @@ Win32::Wlan - Access to the Win32 WLAN API
 
 =head1 SYNOPSIS
 
-    use Win32::Wlan qw(
-    );
+    use Win32::Wlan ();
     if ($Win32::Wlan::available) {
         my $handle = Win32::Wlan::WlanOpenHandle();
         my @interfaces = Win32::Wlan::WlanEnumInterfaces($handle);
