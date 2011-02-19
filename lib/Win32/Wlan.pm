@@ -210,10 +210,13 @@ Win32::Wlan - Access to the Win32 WLAN API
     );
     if ($Win32::Wlan::available) {
         my $handle = Win32::Wlan::WlanOpenHandle();
-        
+        my @interfaces = Win32::Wlan::WlanEnumInterfaces($handle);
+        my $ih = $interfaces[0]->[0];
+        my $info = Win32::Wlan::WlanQueryCurrentConnection($handle,$ih);
+        print "Connected to $info{ profile_name }\n";        
 
     } else {
-        print "No Wlan detected\n";
+        print "No Wlan detected (or switched off)\n";
     };
 
 =head1 SEE ALSO
