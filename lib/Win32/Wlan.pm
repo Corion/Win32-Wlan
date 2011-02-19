@@ -4,6 +4,7 @@ use Carp qw(croak);
 
 use Win32::API; # sorry, 64bit users
 use Encode qw(decode);
+use List::MoreUtils qw(zip);
 
 #DWORD WINAPI WlanOpenHandle(
 #  __in        DWORD dwClientVersion,
@@ -24,6 +25,7 @@ sub Zero() { "\0\0\0\0" };
     ['WlanCloseHandle' => 'II' => 'I'],
     ['WlanFreeMemory' => 'I' => 'I'],
     ['WlanEnumInterfaces' => 'IIP' => 'I'],
+    ['WlanQueryInterface' => 'IPIIPPI' => 'I'],
 );
 
 if (! load_functions()) {
@@ -63,9 +65,7 @@ sub WlanEnumInterfaces {
     $API{ WlanEnumInterfaces }->Call($handle,0,$interfaces) == 0
         or croak $^E;
     my $info = unpack 'P8', $interfaces;
-    use Data::Dumper;
     my ($count,$curr) = unpack 'VV', $info;
-    #warn "$count interfaces";
     my @res;
     if ($count) {
         my $data = unpack "P" . (8+$count*(16+512+4)), $interfaces;
@@ -84,6 +84,36 @@ sub WlanEnumInterfaces {
     WlanFreeMemory($interfaces);
     @res
 };
+
+sub WlanQueryInterface {
+    croak "Wlan functions are not available" unless $available;
+    my ($handle,$interface,$op) = @_;
+    my $size = Zero;
+    my $data = Zero;
+    $API{ WlanQueryInterface }->Call($handle, $interface, $op, 0, $size, $data, 0) == 0
+        or croak $^E;
+    use Data::Dumper;
+    $size = unpack 'V', $size;
+    my $payload = unpack "P$size", $data;
+    
+    $data = unpack 'V', $data;
+    WlanFreeMemory($data);
+    $payload
+};
+
+sub WlanQueryCurrentConnection {
+    my ($handle,$interface) = @_;
+    my $info = WlanQueryInterface($handle,$interface,7);
+    
+    my %res;
+    # Unpack WLAN_CONNECTION_ATTRIBUTES
+    @res{qw(  state mode profile_name association security )} = 
+        unpack 'V    V    a512         V             V', $info;
+    $res{ profile_name } = decode('UTF-16LE', $res{ profile_name });
+    $res{ profile_name } =~ s/\0+$//;
+    
+    \%res
+}
 
 sub load_functions {
     for my $sig (@signatures) {
