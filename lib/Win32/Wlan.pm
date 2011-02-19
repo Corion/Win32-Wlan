@@ -130,7 +130,20 @@ sub WlanGetAvailableNetworkList {
     $API{ WlanGetAvailableNetworkList }->Call($handle,$interface,$flags,0,$list) == 0
         or croak $^E;
                                                 # name ssid_len ssid bss  bssids connectable
-    my @items = _unpack_count_array($list,'a512   V       a32  V    V      V           ', 512+4+32+4+4+4);
+    my @items = _unpack_count_array($list, join '', 
+                                    'a512', # name
+                                    'V',    # ssid_len
+                                    'a32',  # ssid
+                                    'V',    # bss
+                                    'V',    # bssids
+                                    'V',    # connectable
+                                    'V',    # notConnectableReason,
+                                    'V',    # PhysTypes
+                                    'V32',  # PhysType elements
+                                    'V',    # More PhysTypes
+                                    
+                                    
+                                    , 512+4+32+4+4+4);
     for (@items) {
         # First element is the GUUID of the interface
         # Name is in 16bit UTF
