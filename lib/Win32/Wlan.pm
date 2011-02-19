@@ -14,7 +14,9 @@ use Win32::API; # sorry, 64bit users
 use vars qw($VERSION $available %API @signatures);
 $VERSION = '0.01';
 
-sub Zero() { "\0\0\0\0" }; # just in case we ever get a 64bit Win32::API
+sub Zero() { "\0\0\0\0" };
+# just in case we ever get a 64bit Win32::API
+# Zero will have to return 8 bytes of zeroes
 
 @signatures = (
     ['WlanOpenHandle' => 'IIPP' => 'I'],
