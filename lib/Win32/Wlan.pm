@@ -6,13 +6,6 @@ use Win32::API; # sorry, 64bit users
 use Encode qw(decode);
 use List::MoreUtils qw(zip);
 
-#DWORD WINAPI WlanOpenHandle(
-#  __in        DWORD dwClientVersion,
-#  __reserved  PVOID pReserved,
-#  __out       PDWORD pdwNegotiatedVersion,
-#  __out       PHANDLE phClientHandle
-#);
-
 use vars qw($VERSION $available %API @signatures);
 $VERSION = '0.01';
 
