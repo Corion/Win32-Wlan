@@ -52,7 +52,8 @@ sub WlanOpenHandle {
     my $handle = Zero;
     $API{ WlanOpenHandle }->Call(2,0,$version,$handle) == 0
         or croak $^E;
-    unpack "V", $handle
+    my $h = unpack "V", $handle;
+    $h
 };
 
 sub WlanCloseHandle {
@@ -60,7 +61,6 @@ sub WlanCloseHandle {
     my ($handle) = @_;
     $API{ WlanCloseHandle }->Call($handle,0) == 0
         or croak $^E;
-    $handle
 };
 
 sub WlanFreeMemory {
