@@ -18,8 +18,8 @@ my @interfaces = Win32::Wlan::API::WlanEnumInterfaces($handle);
 diag Dumper \@interfaces;
 
 for my $i (@interfaces) {
-    diag "Querying interface $i->[1]";
-    my $ih = $i->[0];
+    diag "Querying interface $i->{name}";
+    my $ih = $i->{guuid};
     
     diag Dumper Win32::Wlan::API::WlanGetAvailableNetworkList($handle,$ih);
 };
