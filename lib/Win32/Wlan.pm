@@ -25,7 +25,7 @@ BEGIN {
         ['WlanGetAvailableNetworkList' => 'IPIIP' => 'I'],
     );
 
-    @EXPORT_OK = map { $_->[0] } @signatures;
+    @EXPORT_OK = (qw<WlanQueryCurrentConnection>, map { $_->[0] } @signatures);
 };
 
 use constant {
