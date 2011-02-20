@@ -208,12 +208,12 @@ Win32::Wlan - Access to the Win32 WLAN API
 
 =head1 SYNOPSIS
 
-    use Win32::Wlan ();
+    use Win32::Wlan qw(WlanOpenHandle WlanEnumInterfaces WlanQueryCurrentConnection);
     if ($Win32::Wlan::available) {
-        my $handle = Win32::Wlan::WlanOpenHandle();
-        my @interfaces = Win32::Wlan::WlanEnumInterfaces($handle);
+        my $handle = WlanOpenHandle();
+        my @interfaces = WlanEnumInterfaces($handle);
         my $ih = $interfaces[0]->[0];
-        my $info = Win32::Wlan::WlanQueryCurrentConnection($handle,$ih);
+        my $info = WlanQueryCurrentConnection($handle,$ih);
         print "Connected to $info{ profile_name }\n";        
 
     } else {
