@@ -15,20 +15,21 @@ my $wlan = Win32::Wlan->new( available => 0 );
 isa_ok $wlan, 'Win32::Wlan';
 ok ! $wlan->available, "If we say it's unavailable, it is";
 
-my $wlan = Win32::Wlan->new();
-if ($wlan->available) {
-    diag "We have a wlan connection";
-    ok $wlan->interface->{name}, "We have a name for the interface";
-    if ($wlan->connected) {
-        my $connection = $wlan->connection;
-        ok $connection->{profile_name}, "We have a profile name";
-    } else {
-        SKIP: {
-            skip 1, "... but we have no connection";
+$wlan = Win32::Wlan->new();
+SKIP: {
+    if ($wlan->available) {
+        diag "We have the Wlan API";
+        if (! $wlan->interface) {
+            skip "We have no Wlan interface", 2;
         };
+        ok $wlan->interface->{name}, "We have a name for the interface";
+        if ($wlan->connected) {
+            my $connection = $wlan->connection;
+            ok $connection->{profile_name}, "We have a profile name";
+        } else {
+            skip "... but we have no connection", 1;
+        };
+    } else {
+        skip "Wlan is unavailable", 2;
     };
-} else {
-    SKIP: {
-        skip 2, "Wlan is unavailable";
-    }
-};
+}

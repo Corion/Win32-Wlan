@@ -75,10 +75,12 @@ sub _unpack_counted_array {
     my ($count,$curr) = unpack 'VV', $info;
     my $data = unpack "P" . (8+$count*$size), $pointer;
     my @items = unpack "x8 ($template)$count", $data;
-    my $elements_per_item = @items / $count;
     my @res;
-    while (@items) {
-        push @res, [splice @items, 0, $elements_per_item ]
+    if ($count) {
+        my $elements_per_item = @items / $count;
+        while (@items) {
+            push @res, [splice @items, 0, $elements_per_item ]
+        };
     };
     @res
 };

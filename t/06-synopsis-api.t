@@ -10,12 +10,14 @@ BEGIN {
 };
 
 use Win32::Wlan::API qw(WlanOpenHandle WlanEnumInterfaces WlanQueryCurrentConnection);
-if ($Win32::Wlan::API::available) {
+if ($Win32::Wlan::API::wlan_available) {
     my $handle = WlanOpenHandle();
     my @interfaces = WlanEnumInterfaces($handle);
-    my $ih = $interfaces[0]->[0];
-    my %info = WlanQueryCurrentConnection($handle,$ih);
-    diag "Connected to $info{ profile_name }\n";        
+    if (@interfaces) {
+        my $ih = $interfaces[0]->[0];
+        my %info = WlanQueryCurrentConnection($handle,$ih);
+        diag "Connected to $info{ profile_name }\n";        
+    };
 
 } else {
     diag "No Wlan detected (or switched off)\n";
