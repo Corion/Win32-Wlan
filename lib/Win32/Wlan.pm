@@ -5,41 +5,57 @@ use Win32::Wlan::API qw<
     WlanOpenHandle
     WlanCloseHandle
     WlanQueryCurrentConnection
+    WlanEnumInterfaces
     $wlan_available
 >;
+
+# Ideally, the handle should be (another) singleton
+# that fetches and keeps the handle until the application
+# closes or the last Win32::Wlan object gets destroyed
 
 sub new {
     my ($class,%args) = @_;
     
-    $args{available} ||= $wlan_available;
     if ($args{ available } or !exists $args{ available }) {
-	$args{handle} ||= WlanOpenHandle();
-	if (! $args{ interface }) {
-	    my @interfaces = WlanQueryInterfaces($args{handle});
-	    if (@interfaces > 1) {
-		warn "More than one Wlan interface found. Using first.";
-	    };
-	    $args{interface} = $interfaces[0];
-	};
+        $args{available} ||= $wlan_available;
+        $args{handle} ||= WlanOpenHandle();
+        warn $args{handle};
+        if (! $args{ interface }) {
+            my @interfaces = WlanEnumInterfaces($args{handle});
+            if (@interfaces > 1) {
+                warn "More than one Wlan interface found. Using first.";
+            };
+            $args{interface} = $interfaces[0];
+            use Data::Dumper;
+            warn Dumper $args{interface};
+        };
     };
     bless \%args => $class;
 };
 
+sub DESTROY {
+    my ($self) = @_;
+    if ($self->handle and $self->available) {
+        WlanCloseHandle($self->handle);
+    };
+}
+
 sub handle { $_[0]->{handle} };
 sub interface { $_[0]->{interface} };
 sub available { $_[0]->{available} };
+sub connected { $_[0]->connection };
 
 sub connection {
     my ($self) = @_;
     if ($self->available) {
-	return WlanQueryCurrentConnection( $self->handle, $self->interface );
+        return { WlanQueryCurrentConnection( $self->handle, $self->interface->{guuid} ) };
     };
 };
 
 sub visible_networks {
     my ($self) = @_;
     if ($self->available) {
-	WlanGetAvailableNetworkList( $self->handle, $self->interface );
+        WlanGetAvailableNetworkList( $self->handle, $self->interface->{guuid} );
     };
 };
 
@@ -49,7 +65,7 @@ __END__
 
 =head1 NAME
 
-Win32::Wlan - Query Wlan properties
+Win32::Wlan - Query wlan properties
 
 =head1 SYNOPSIS
 
@@ -57,10 +73,10 @@ Win32::Wlan - Query Wlan properties
     my $wlan = Win32::Wlan->new;
     if ($wlan->available) {
         print "Connected to ", $wlan->connection->{profile_name},"\n";
-	print "I see the following networks\n";
+        print "I see the following networks\n";
         for ($wlan->visible_networks) {
-	    printf "%s\t-%d dbm\n", $_->{name}, $_->{signal_quality};
-	};
+            printf "%s\t-%d dbm\n", $_->{name}, $_->{signal_quality};
+        };
 
     } else {
         print "No Wlan detected (or switched off)\n";
