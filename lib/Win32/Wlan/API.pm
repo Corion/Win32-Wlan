@@ -96,6 +96,12 @@ sub WlanEnumInterfaces {
         $_->[1] = decode('UTF-16LE' => $_->[1]);
         $_->[1] =~ s/\0+$//;
         # The third element is the status of the interface
+        
+        $_ = {
+            guuid => $_->[0],
+            name =>  $_->[1],
+            status => $_->[2],
+        };
     };
     
     $interfaces = unpack 'V', $interfaces;
