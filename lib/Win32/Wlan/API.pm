@@ -2,14 +2,13 @@ package Win32::Wlan::API;
 use strict;
 use Carp qw(croak);
 
-use Win32::API; # sorry, 64bit users
 use Encode qw(decode);
 use List::MoreUtils qw(zip);
 
 use Exporter 'import';
 
 use vars qw($VERSION $wlan_available %API @signatures @EXPORT_OK);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub Zero() { "\0\0\0\0" };
 # just in case we ever get a 64bit Win32::API
@@ -195,6 +194,11 @@ sub WlanGetAvailableNetworkList {
 }
 
 sub load_functions {
+    my $ok = eval {
+        require Win32::API;
+        1
+    };
+    return if ! $ok;
     for my $sig (@signatures) {
         $API{ $sig->[0] } = eval {
             Win32::API->new( 'wlanapi.dll', @$sig );
