@@ -1,6 +1,11 @@
 #perl -w
 use strict;
-use Test::More tests => 5;
+use Test::More tests;
+if ($^O !~ /Win32/i) {
+    plan skip_all => "Win32::Wlan only works on Win32";
+} else {
+    plan tests => 5;
+};
 
 use Win32::Wlan::API;
 use Data::Dumper;
