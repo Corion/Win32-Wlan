@@ -15,3 +15,9 @@ t/04-current-ssid.t
 t/05-enum-visible.t
 t/06-synopsis-api.t
 t/06-synopsis.t
+t/99-changes.t
+t/99-manifest.t
+t/99-pod.t
+t/99-todo.t
+t/99-unix-text.t
+t/99-versions.t
