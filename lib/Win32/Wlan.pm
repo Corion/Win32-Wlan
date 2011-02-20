@@ -6,6 +6,7 @@ use Win32::Wlan::API qw<
     WlanCloseHandle
     WlanQueryCurrentConnection
     WlanEnumInterfaces
+    WlanGetAvailableNetworkList
     $wlan_available
 >;
 
