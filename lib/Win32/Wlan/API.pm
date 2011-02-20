@@ -115,8 +115,8 @@ sub WlanQueryInterface {
     my $size = Zero;
     my $data = Zero;
     $API{ WlanQueryInterface }->Call($handle, $interface, $op, 0, $size, $data, 0) == 0
-        or croak $^E;
-    use Data::Dumper;
+        or return;
+        
     $size = unpack 'V', $size;
     my $payload = unpack "P$size", $data;
     
@@ -127,13 +127,13 @@ sub WlanQueryInterface {
 
 sub WlanQueryCurrentConnection {
     my ($handle,$interface) = @_;
-    my $info = WlanQueryInterface($handle,$interface,7);
+    my $info = WlanQueryInterface($handle,$interface,7) || '';
     
     my %res;
     # Unpack WLAN_CONNECTION_ATTRIBUTES
     @res{qw(  state mode profile_name association security )} = 
         unpack 'V    V    a512         V             V', $info;
-    $res{ profile_name } = decode('UTF-16LE', $res{ profile_name });
+    $res{ profile_name } = decode('UTF-16LE', $res{ profile_name }) || '';
     $res{ profile_name } =~ s/\0+$//;
     
     %res
