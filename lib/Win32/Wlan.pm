@@ -41,7 +41,7 @@ sub DESTROY {
 sub handle { $_[0]->{handle} };
 sub interface { $_[0]->{interface} };
 sub available { $_[0]->{available} };
-sub connected { $_[0]->connection };
+sub connected { defined $_[0]->connection->{profile_name} };
 
 sub connection {
     my ($self) = @_;
