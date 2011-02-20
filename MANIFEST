@@ -1,4 +1,5 @@
 .gitignore
+bin/monitor.pl
 Changes
 lib/Win32/Wlan.pm
 lib/Win32/Wlan/API.pm
