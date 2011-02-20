@@ -2,8 +2,8 @@
 use strict;
 use Test::More tests => 1;
 
-use Win32::Wlan qw(WlanOpenHandle WlanEnumInterfaces WlanQueryCurrentConnection);
-if ($Win32::Wlan::available) {
+use Win32::Wlan::API qw(WlanOpenHandle WlanEnumInterfaces WlanQueryCurrentConnection);
+if ($Win32::Wlan::API::available) {
     my $handle = WlanOpenHandle();
     my @interfaces = WlanEnumInterfaces($handle);
     my $ih = $interfaces[0]->[0];

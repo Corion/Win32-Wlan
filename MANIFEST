@@ -1,13 +1,16 @@
 .gitignore
 Changes
 lib/Win32/Wlan.pm
+lib/Win32/Wlan/API.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.skip
 README
+t/01-use-api.t
 t/01-use.t
 t/02-open-close.t
 t/03-enum.t
 t/04-current-ssid.t
 t/05-enum-visible.t
+t/06-synopsis-api.t
 t/06-synopsis.t
