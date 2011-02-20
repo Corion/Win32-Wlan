@@ -53,7 +53,7 @@ sub connection {
 sub visible_networks {
     my ($self) = @_;
     if ($self->available) {
-        WlanGetAvailableNetworkList( $self->handle, $self->interface->{guuid} );
+        return WlanGetAvailableNetworkList( $self->handle, $self->interface->{guuid} );
     };
 };
 
