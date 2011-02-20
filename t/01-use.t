@@ -5,7 +5,7 @@ use Test::More tests;
 if ($^O !~ /Win32/i) {
     plan skip_all => "Win32::Wlan only works on Win32";
 } else {
-    plan tests => 1;
+    plan 'tests' => 1;
 };
 
 BEGIN {
