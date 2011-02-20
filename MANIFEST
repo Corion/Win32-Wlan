@@ -10,3 +10,4 @@ t/02-open-close.t
 t/03-enum.t
 t/04-current-ssid.t
 t/05-enum-visible.t
+t/06-synopsis.t
