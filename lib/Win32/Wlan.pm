@@ -20,15 +20,12 @@ sub new {
     if ($args{ available } or !exists $args{ available }) {
         $args{available} ||= $wlan_available;
         $args{handle} ||= WlanOpenHandle();
-        warn $args{handle};
         if (! $args{ interface }) {
             my @interfaces = WlanEnumInterfaces($args{handle});
             if (@interfaces > 1) {
                 warn "More than one Wlan interface found. Using first.";
             };
             $args{interface} = $interfaces[0];
-            use Data::Dumper;
-            warn Dumper $args{interface};
         };
     };
     bless \%args => $class;
