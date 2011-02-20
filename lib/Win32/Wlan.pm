@@ -161,7 +161,9 @@ sub WlanGetAvailableNetworkList {
     for (@items) {
         my %info;
         @info{qw( name ssid_len ssid bss bssids connectable notConnectableReason
-                  phystype_count phystypes has_more_phystypes
+                  phystype_count )} = splice @$_, 0, 8;
+        $info{ phystypes }= [splice @$_, 0, 8];
+        @info{qw( has_more_phystypes
                   signal_quality
                   security_enabled
                   dot11_default_auth_algorithm
@@ -172,9 +174,9 @@ sub WlanGetAvailableNetworkList {
         
         # Decode the elements
         $info{ ssid } = substr( $info{ ssid }, 0, $info{ ssid_len });
-        $info{ name } = decode('UTF-16LE', $res{ name });
+        $info{ name } = decode('UTF-16LE', $info{ name });
         $info{ name } =~ s/\0+$//;
-        splice $info{ phystypes }, $info{ phystype_count };
+        splice @{$info{ phystypes }}, $info{ phystype_count };
 
         $_ = \%info;
     };
