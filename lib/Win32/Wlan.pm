@@ -8,7 +8,7 @@ use List::MoreUtils qw(zip);
 
 use Exporter 'import';
 
-use vars qw($VERSION $available %API @signatures);
+use vars qw($VERSION $available %API @signatures @EXPORT_OK);
 $VERSION = '0.01';
 
 sub Zero() { "\0\0\0\0" };
