@@ -14,6 +14,51 @@ use Win32::Wlan::API qw<
 # that fetches and keeps the handle until the application
 # closes or the last Win32::Wlan object gets destroyed
 
+=head1 NAME
+
+Win32::Wlan - Query wlan properties
+
+=head1 SYNOPSIS
+
+    require Win32::Wlan;
+    my $wlan = Win32::Wlan->new;
+    if ($wlan->available) {
+        print "Connected to ", $wlan->connection->{profile_name},"\n";
+        print "I see the following networks\n";
+        for ($wlan->visible_networks) {
+            printf "%s\t-%d dbm\n", $_->{name}, $_->{signal_quality};
+        };
+
+    } else {
+        print "No Wlan detected (or switched off)\n";
+    };
+
+=head1 METHODS
+
+=head2 C<< Win32::Wlan->new( %args ) >>
+
+    my $wlan = Win32::Wlan->new();
+
+Creates a new Win32::Wlan object.
+
+=over 4
+
+=item *
+
+C<available> - optional argument to force detection of general Wlan availability
+
+=item *
+
+C<handle> - optional argument to give an existing Wlan handle to the object
+
+=item *
+
+C<interface> - optional argument to give an existing guuid to the object
+
+=back
+
+=cut
+
 sub new {
     my ($class,%args) = @_;
     
@@ -38,10 +83,69 @@ sub DESTROY {
     };
 }
 
+=head2 C<< $wlan->handle >>
+
+Returns the Windows API handle for the Wlan API.
+
+=cut
+
 sub handle { $_[0]->{handle} };
+
+=head2 C<< $wlan->interface >>
+
+    print $wlan->interface->{name};
+
+Returns a hashref describing the interface. The keys are
+C<guuid> for the guuid, C<name> for the human-readable name and
+C<status> for the status of the interface.
+
+=cut
+
 sub interface { $_[0]->{interface} };
+
+=head2 C<< $wlan->available >>
+
+    $wlan->available
+        or warn "Wlan API is not available";
+
+Returns whether the Wlan API is available. The Wlan API is available
+on Windows XP SP3 or higher.
+
+=cut
+
 sub available { $_[0]->{available} };
+
+=head2 C<< $wlan->connected >>
+
+    $wlan->connected
+        or warn "Wlan connection unavailable";
+
+Returns whether a Wlan connection is established. No connection is established
+when Wlan is switched off or no access point is in range.
+
+=cut
+
 sub connected { defined $_[0]->connection->{profile_name} };
+
+=head2 C<< $wlan->connection >>
+
+    if ($wlan->connected) {
+        print "Connected to ";
+        print $wlan->connection->{profile_name};
+    };
+
+Returns information about the current connection in a hashref. The keys
+are
+
+=over 4
+
+=item *
+
+C<profile_name> - the name of the profile of the current connection
+
+=back
+
+=cut
 
 sub connection {
     my ($self) = @_;
@@ -49,6 +153,26 @@ sub connection {
         return { WlanQueryCurrentConnection( $self->handle, $self->interface->{guuid} ) };
     };
 };
+
+=head2 C<< $wlan->visible_networks >>
+
+Returns information about the currently visible networks as a list of
+hashrefs.
+
+=over 4
+
+=item *
+
+C<ssid> - the SSID of the network
+
+=item *
+
+C<signal_quality> - the signal quality ranging linearly from 0 to 100
+meaning -100 dbm to -50 dbm
+
+=back
+
+=cut
 
 sub visible_networks {
     my ($self) = @_;
@@ -60,25 +184,6 @@ sub visible_networks {
 1;
 
 __END__
-
-=head1 NAME
-
-Win32::Wlan - Query wlan properties
-
-=head1 SYNOPSIS
-
-    require Win32::Wlan;
-    my $wlan = Win32::Wlan->new;
-    if ($wlan->available) {
-        print "Connected to ", $wlan->connection->{profile_name},"\n";
-        print "I see the following networks\n";
-        for ($wlan->visible_networks) {
-            printf "%s\t-%d dbm\n", $_->{name}, $_->{signal_quality};
-        };
-
-    } else {
-        print "No Wlan detected (or switched off)\n";
-    };
 
 =head1 SIMPLIFICATIONS
 
