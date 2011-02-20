@@ -69,7 +69,7 @@ sub WlanFreeMemory {
     $API{ WlanFreeMemory }->Call($block);
 };
 
-sub _unpack_count_array {
+sub _unpack_counted_array {
     my ($pointer,$template,$size) = @_;
     my $info = unpack 'P8', $pointer;
     my ($count,$curr) = unpack 'VV', $info;
@@ -89,7 +89,7 @@ sub WlanEnumInterfaces {
     my $interfaces = Zero;
     $API{ WlanEnumInterfaces }->Call($handle,0,$interfaces) == 0
         or croak $^E;
-    my @items = _unpack_count_array($interfaces,'a16 a512 V',16+512+4);
+    my @items = _unpack_counted_array($interfaces,'a16 a512 V',16+512+4);
     for (@items) {
         # First element is the GUUID of the interface
         # Name is in 16bit UTF
