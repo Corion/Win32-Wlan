@@ -5,6 +5,9 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 
+my $running_on_windows = $^O eq 'MSWin32' || $^O eq 'cygwin';
+die qq(OS unsupported\n) unless $running_on_windows;
+
 # I should maybe use something like Shipwright...
 regen_README('lib/Win32/Wlan.pm');
 #regen_EXAMPLES();
