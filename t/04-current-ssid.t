@@ -20,9 +20,9 @@ diag Dumper \@interfaces;
 for my $i (@interfaces) {
     diag "Querying interface $i->[1]";
     my $ih = $i->[0];
-    my $info = Win32::Wlan::WlanQueryCurrentConnection($handle,$ih);
+    my %info = Win32::Wlan::WlanQueryCurrentConnection($handle,$ih);
     
-    diag Dumper $info;
+    diag Dumper \%info;
 };
 
 ok eval {

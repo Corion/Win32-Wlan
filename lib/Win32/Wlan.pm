@@ -130,7 +130,7 @@ sub WlanQueryCurrentConnection {
     $res{ profile_name } = decode('UTF-16LE', $res{ profile_name });
     $res{ profile_name } =~ s/\0+$//;
     
-    \%res
+    %res
 }
 
 sub WlanGetAvailableNetworkList {
