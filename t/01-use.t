@@ -1,6 +1,6 @@
 #perl -w
 use strict;
-use Test::More tests;
+use Test::More;
 
 if ($^O !~ /Win32/i) {
     plan skip_all => "Win32::Wlan only works on Win32";
