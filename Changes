@@ -1,3 +1,6 @@
+0.03 20110222
+    . Fix missing prerequisite, thanks to the CPAN testers
+
 0.02 20110220
     . Pass tests on more platforms by making them more robust
 

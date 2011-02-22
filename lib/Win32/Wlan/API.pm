@@ -3,12 +3,11 @@ use strict;
 use Carp qw(croak);
 
 use Encode qw(decode);
-use List::MoreUtils qw(zip);
 
 use Exporter 'import';
 
 use vars qw($VERSION $wlan_available %API @signatures @EXPORT_OK);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub Zero() { "\0\0\0\0" };
 # just in case we ever get a 64bit Win32::API

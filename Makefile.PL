@@ -20,6 +20,7 @@ WriteMakefile1(
     'LICENSE'       => 'perl',
     'VERSION_FROM'  => 'lib/Win32/Wlan.pm', # finds $VERSION
     'PREREQ_PM'     => { 'Win32::API' => 0,
+                         'Encode' => 0,
                       }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM   => 'lib/Win32/Wlan.pm', # retrieve abstract from module
     AUTHOR          => 'Max Maischein <corion@cpan.org>',
