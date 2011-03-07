@@ -1,3 +1,6 @@
+0.04 20110307
+    . Fix t/06-synopsis-api.t, spotted by Thomas Fahle
+
 0.03 20110222
     . Fix missing prerequisite, thanks to the CPAN testers
 

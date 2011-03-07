@@ -223,7 +223,9 @@ Win32::Wlan::API - Access to the Win32 WLAN API
     if ($Win32::Wlan::available) {
         my $handle = WlanOpenHandle();
         my @interfaces = WlanEnumInterfaces($handle);
-        my $ih = $interfaces[0]->[0];
+        my $ih = $interfaces[0]->{guuid};
+        # Network adapters are identified by guuid
+        print $interfaces[0]->{name};
         my $info = WlanQueryCurrentConnection($handle,$ih);
         print "Connected to $info{ profile_name }\n";        
 

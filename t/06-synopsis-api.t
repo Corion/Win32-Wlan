@@ -14,7 +14,8 @@ if ($Win32::Wlan::API::wlan_available) {
     my $handle = WlanOpenHandle();
     my @interfaces = WlanEnumInterfaces($handle);
     if (@interfaces) {
-        my $ih = $interfaces[0]->[0];
+        my $ih = $interfaces[0]->{guuid};
+        diag "Interface name '$interfaces[0]->{name}'";
         my %info = WlanQueryCurrentConnection($handle,$ih);
         diag "Connected to $info{ profile_name }\n";        
     };
