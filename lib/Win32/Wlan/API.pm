@@ -90,19 +90,19 @@ sub WlanEnumInterfaces {
     $API{ WlanEnumInterfaces }->Call($handle,0,$interfaces) == 0
         or croak $^E;
     my @items = _unpack_counted_array($interfaces,'a16 a512 V',16+512+4);
-    for (@items) {
+    @items = map {
         # First element is the GUUID of the interface
         # Name is in 16bit UTF
         $_->[1] = decode('UTF-16LE' => $_->[1]);
         $_->[1] =~ s/\0+$//;
         # The third element is the status of the interface
         
-        $_ = {
+        +{
             guuid => $_->[0],
             name =>  $_->[1],
             status => $_->[2],
         };
-    };
+    } @items;
     
     $interfaces = unpack 'V', $interfaces;
     WlanFreeMemory($interfaces);
