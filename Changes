@@ -1,4 +1,4 @@
-0.05 to be released
+0.05 20110320
     . Fix ->connected to return false if WLAN is switched off
 
 0.04 20110307
