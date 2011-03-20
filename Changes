@@ -1,3 +1,6 @@
+0.05 to be released
+    . Fix ->connected to return false if WLAN is switched off
+
 0.04 20110307
     . Fix t/06-synopsis-api.t, spotted by Thomas Fahle
 

@@ -127,7 +127,10 @@ when Wlan is switched off or no access point is in range.
 
 =cut
 
-sub connected { defined $_[0]->connection->{profile_name} };
+sub connected {
+    my $conn = $_[0]->connection;
+    defined $conn->{profile_name} && $conn->{profile_name}
+};
 
 =head2 C<< $wlan->connection >>
 
