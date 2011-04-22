@@ -44,6 +44,26 @@ if (! load_functions()) {
     $wlan_available = 1;
 };
 
+sub unpack_struct {
+    # Unpacks a string into a hash
+    # according to a key/unpack template structure
+    my $desc = shift;
+    my @keys;
+    my $template = '';
+
+    for (0..$#{$desc}) {
+        if ($_ % 2) {
+            $template .= $desc->[ $_ ]
+        } elsif ($desc->[ $_ ] ne '') {
+            push @keys, $desc->[ $_ ]
+        };
+    };
+
+    my %res;
+    @res{ @keys } = unpack $template, shift;
+    %res
+}
+
 sub WlanOpenHandle {
     croak "Wlan functions are not available" unless $wlan_available;
     my $version = Zero;
