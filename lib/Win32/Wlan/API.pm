@@ -172,8 +172,8 @@ sub WlanGetAvailableNetworkList {
         @info{qw( has_more_phystypes
                   signal_quality
                   security_enabled
-                  dot11_default_auth_algorithm
-                  dot11_default_cipher_algorithm
+                  default_auth_algorithm
+                  default_cipher_algorithm
                   flags
                   reserved
         )} = @$_;
