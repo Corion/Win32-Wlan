@@ -1,3 +1,12 @@
+0.06 20110422
+    . Add some documentation
+    . Rename the keys
+        dot11_default_auth_algorithm => default_auth_algorithm
+        dot11_default_cipher_algorithm => default_cipher_algorithm
+    . WlanCurrentConnection() now also decodes and returns
+      the "security" status and encryption algorithm for the
+      current connection
+
 0.05 20110320
     . Fix ->connected to return false if WLAN is switched off
 

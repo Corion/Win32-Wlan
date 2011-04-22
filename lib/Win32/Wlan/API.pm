@@ -7,7 +7,7 @@ use Encode qw(decode);
 use Exporter 'import';
 
 use vars qw($VERSION $wlan_available %API @signatures @EXPORT_OK);
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 sub Zero() { "\0\0\0\0" };
 # just in case we ever get a 64bit Win32::API
