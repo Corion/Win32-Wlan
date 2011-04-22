@@ -217,12 +217,34 @@ sub WlanQueryCurrentConnection {
     my ($handle,$interface) = @_;
     my $info = WlanQueryInterface($handle,$interface,7) || '';
     
-    my %res;
-    # Unpack WLAN_CONNECTION_ATTRIBUTES
-    @res{qw(  state mode profile_name association security )} = 
-        unpack 'V    V    a512         V             V', $info;
+    my @WLAN_CONNECTION_ATTRIBUTES = (
+        state => 'V',
+        mode  => 'V',
+        profile_name => 'a512',
+        # WLAN_ASSOCIATION_ATTRIBUTES
+        ssid_len => 'V',
+        ssid => 'a32',
+        bss_type => 'V',
+        mac_address => 'a6',
+        dummy => 'a2', # ???
+        phy_type => 'V',
+        phy_index => 'V',
+        signal_quality => 'V',
+        rx_rate => 'V',
+        tx_rate => 'V',
+        security_enabled => 'V', # BOOL
+        onex_enabled     => 'V', # BOOL
+        auth_algorithm   => 'V',
+        cipher_algorithm => 'V',
+    );
+    
+    my %res = unpack_struct(\@WLAN_CONNECTION_ATTRIBUTES, $info);
+    
     $res{ profile_name } = decode('UTF-16LE', $res{ profile_name }) || '';
     $res{ profile_name } =~ s/\0+$//;
+    $res{ ssid } = substr $res{ ssid }, 0, $res{ ssid_len };
+    
+    $res{ mac_address } = sprintf "%02x:%02x:%02x:%02x:%02x:%02x", unpack 'C*', $res{ mac_address };
     
     %res
 }
