@@ -145,6 +145,74 @@ sub WlanQueryInterface {
     $payload
 };
 
+=head2 C<< WlanCurrentConnection( $handle, $interface ) >>
+
+Returns a hashref containing the following keys
+
+=over 4
+
+=item *
+
+C<< state >> - state of the interface
+
+One of the following
+
+  Win32::Wlan::API::not_ready               => 0,
+  Win32::Wlan::API::connected               => 1,
+  Win32::Wlan::API::ad_hoc_network_formed   => 2,
+  Win32::Wlan::API::disconnecting           => 3,
+  Win32::Wlan::API::disconnected            => 4,
+  Win32::Wlan::API::associating             => 5,
+  Win32::Wlan::API::discovering             => 6,
+  Win32::Wlan::API::authenticating          => 7 
+
+=item *
+
+C<< mode >>
+
+=item *
+
+C<< profile_name >>
+
+C<< bss_type >>
+
+  infrastructure   = 1,
+  independent      = 2,
+  any              = 3 
+
+=item *
+
+auth_algorithm
+
+  DOT11_AUTH_ALGO_80211_OPEN         = 1,
+  DOT11_AUTH_ALGO_80211_SHARED_KEY   = 2,
+  DOT11_AUTH_ALGO_WPA                = 3,
+  DOT11_AUTH_ALGO_WPA_PSK            = 4,
+  DOT11_AUTH_ALGO_WPA_NONE           = 5,
+  DOT11_AUTH_ALGO_RSNA               = 6, # wpa2
+  DOT11_AUTH_ALGO_RSNA_PSK           = 7, # wpa2
+  DOT11_AUTH_ALGO_IHV_START          = 0x80000000,
+  DOT11_AUTH_ALGO_IHV_END            = 0xffffffff 
+
+=item *
+
+cipher_algorithm
+
+  DOT11_CIPHER_ALGO_NONE            = 0x00,
+  DOT11_CIPHER_ALGO_WEP40           = 0x01,
+  DOT11_CIPHER_ALGO_TKIP            = 0x02,
+  DOT11_CIPHER_ALGO_CCMP            = 0x04,
+  DOT11_CIPHER_ALGO_WEP104          = 0x05,
+  DOT11_CIPHER_ALGO_WPA_USE_GROUP   = 0x100,
+  DOT11_CIPHER_ALGO_RSN_USE_GROUP   = 0x100,
+  DOT11_CIPHER_ALGO_WEP             = 0x101,
+  DOT11_CIPHER_ALGO_IHV_START       = 0x80000000,
+  DOT11_CIPHER_ALGO_IHV_END         = 0xffffffff 
+
+=back
+
+=cut 
+
 sub WlanQueryCurrentConnection {
     my ($handle,$interface) = @_;
     my $info = WlanQueryInterface($handle,$interface,7) || '';
