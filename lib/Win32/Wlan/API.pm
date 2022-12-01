@@ -68,8 +68,11 @@ sub WlanOpenHandle {
     croak "Wlan functions are not available" unless $wlan_available;
     my $version = Zero;
     my $handle = Zero;
-    $API{ WlanOpenHandle }->Call(2,0,$version,$handle) == 0
-        or croak $^E;
+    my $rc;
+    $wlan_available = 0; # Assume unavailibility
+    ($rc = $API{ WlanOpenHandle }->Call(2,0,$version,$handle)) == 0
+        or do { croak eval { require Win32; Win32::FormatMessage($rc) } || "Error $rc"; };
+    $wlan_available = 1; # Ok, finally
     my $h = unpack "V", $handle;
     $h
 };
