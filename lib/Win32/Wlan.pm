@@ -65,18 +65,20 @@ sub new {
     my ($class,%args) = @_;
     
     if ($args{ available } or !exists $args{ available }) {
-        $args{available} ||= $wlan_available;
-        $args{handle} ||= WlanOpenHandle();
-        if (! $args{ interface }) {
-            my @interfaces = WlanEnumInterfaces($args{handle});
-            if (@interfaces > 1) {
-                warn "More than one Wlan interface found. Using first.";
-            };
-            $args{interface} = $interfaces[0];
-        };
-    };
+        $args{handle} ||= eval { WlanOpenHandle() };
+        if ($args{available} = $wlan_available) {  # $wlan_available is always overwriten when we call WlanOpenHandle()
+            if (! $args{ interface }) {
+                my @interfaces = WlanEnumInterfaces($args{handle});
+                if (@interfaces > 1) {
+                    warn "More than one Wlan interface found. Using first.";
+                }
+                $args{interface} = $interfaces[0];
+            }
+        }
+    }
     bless \%args => $class;
 };
+
 
 sub DESTROY {
     my ($self) = @_;
