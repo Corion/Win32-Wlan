@@ -65,8 +65,16 @@ sub new {
     my ($class,%args) = @_;
     
     if ($args{ available } or !exists $args{ available }) {
-        $args{handle} ||= eval { WlanOpenHandle() };
-        if ($args{available} = $wlan_available) {  # $wlan_available is always overwriten when we call WlanOpenHandle()
+        if (! $args{handle}) {
+            $args{handle} = eval { WlanOpenHandle() };
+            $args{available} = $wlan_available;
+        } else {
+            #
+            # User gave a handle, so assume availibility is true
+            #
+            $args{available} = 1;
+        }
+        if ($args{available}) {
             if (! $args{ interface }) {
                 my @interfaces = WlanEnumInterfaces($args{handle});
                 if (@interfaces > 1) {
