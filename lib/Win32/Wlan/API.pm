@@ -1,6 +1,7 @@
 package Win32::Wlan::API;
 use strict;
 use Carp qw(croak);
+use Config;
 
 use Encode qw(decode);
 
@@ -9,9 +10,9 @@ use Exporter 'import';
 use vars qw($VERSION $wlan_available %API @signatures @EXPORT_OK);
 $VERSION = '0.06';
 
-sub Zero() { "\0\0\0\0" };
-# just in case we ever get a 64bit Win32::API
-# Zero will have to return 8 bytes of zeroes
+# This is used to determine whether we have a 64bit Win32::API
+# or a 32bit Win32::API - a pointer is 8 or 4 bytes wide
+sub Zero() { "\0" x $Config{ptrsize} };
 
 BEGIN {
     @signatures = (
