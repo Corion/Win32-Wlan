@@ -14,3 +14,5 @@ CVS/
 .bak$
 ^cover_db/
 ^db/
+^MYMETA
+^\.prove
