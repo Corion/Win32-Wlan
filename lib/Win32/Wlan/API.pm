@@ -47,6 +47,11 @@ if (! load_functions()) {
     $wlan_available = 1;
 };
 
+sub Win32_Error_String {
+    my( $rc ) = @_;
+    return eval { require Win32; Win32::FormatMessage($rc) } || "Error $rc"
+}
+
 sub unpack_struct {
     # Unpacks a string into a hash
     # according to a key/unpack template structure
@@ -74,7 +79,7 @@ sub WlanOpenHandle {
     my $rc;
     $wlan_available = 0; # Assume unavailibility
     ($rc = $API{ WlanOpenHandle }->Call(2,0,$version,$handle)) == 0
-        or do { croak eval { require Win32; Win32::FormatMessage($rc) } || "Error $rc"; };
+        or croak Win32_Error_String($rc);
     $wlan_available = 1; # Ok, finally
     my $h = unpack "V", $handle;
     $h
@@ -263,7 +268,9 @@ sub WlanGetAvailableNetworkList {
     if( $rc == ERROR_NDIS_DOT11_POWER_STATE_INVALID()) {
         return;
     }
-    $rc == 0 or croak $^E // $rc;
+    if( $rc != 0 ) {
+        croak Win32_Error_String($rc);
+    }
                                                 # name ssid_len ssid bss  bssids connectable
     my @items = _unpack_counted_array($list, join( '',
         'a512', # name
