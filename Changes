@@ -1,3 +1,9 @@
+0.07 2022-12-04
+    * Fix for 64-bit Windows, this addresses Github issue #1
+	* Support networks being unavailable while Wlan is active
+	  Contributed by jddurand, many thanks!
+	* Distribution packaging chores
+
 0.06 20110422
     . Add some documentation
     . Rename the keys
