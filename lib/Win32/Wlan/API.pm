@@ -356,17 +356,17 @@ Win32::Wlan::API - Access to the Win32 WLAN API
 
 Windows Native Wifi Reference
 
-L<http://msdn.microsoft.com/en-us/library/ms706274%28v=VS.85%29.aspx>
+L<https://msdn.microsoft.com/en-us/library/ms706274%28v=VS.85%29.aspx>
 
 =head1 REPOSITORY
 
 The public repository of this module is
-L<http://github.com/Corion/Win32-Wlan>.
+L<https://github.com/Corion/Win32-Wlan>.
 
 =head1 SUPPORT
 
 The public support forum of this module is
-L<http://perlmonks.org/>.
+L<https://perlmonks.org/>.
 
 =head1 BUG TRACKER
 
@@ -380,7 +380,7 @@ Max Maischein C<corion@cpan.org>
 
 =head1 COPYRIGHT (c)
 
-Copyright 2011-2011 by Max Maischein C<corion@cpan.org>.
+Copyright 2011-2022 by Max Maischein C<corion@cpan.org>.
 
 =head1 LICENSE
 
