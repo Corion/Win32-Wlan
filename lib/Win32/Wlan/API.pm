@@ -21,11 +21,13 @@ BEGIN {
         ['WlanFreeMemory' => 'I' => 'I'],
         ['WlanEnumInterfaces' => 'IIP' => 'I'],
         ['WlanQueryInterface' => 'IPIIPPI' => 'I'],
-        ['WlanGetAvailableNetworkList' => 'IPIIP' => 'I'],
+        ['WlanGetAvailableNetworkList' => 'IPIIP' => 'N'],
     );
 
     @EXPORT_OK = (qw<$wlan_available WlanQueryCurrentConnection>, map { $_->[0] } @signatures);
 };
+
+use constant ERROR_NDIS_DOT11_POWER_STATE_INVALID => 0x80342002;
 
 use constant {
   not_ready               => 0,
@@ -257,8 +259,11 @@ sub WlanGetAvailableNetworkList {
     my ($handle,$interface,$flags) = @_;
     $flags ||= 0;
     my $list = Zero;
-    $API{ WlanGetAvailableNetworkList }->Call($handle,$interface,$flags,0,$list) == 0
-        or croak $^E;
+	my $rc = $API{ WlanGetAvailableNetworkList }->Call($handle,$interface,$flags,0,$list);
+	if( $rc == ERROR_NDIS_DOT11_POWER_STATE_INVALID()) {
+		return;
+	}
+	$rc == 0 or croak $^E // $rc;
                                                 # name ssid_len ssid bss  bssids connectable
     my @items = _unpack_counted_array($list, join( '', 
         'a512', # name
