@@ -63,7 +63,7 @@ C<interface> - optional argument to give an existing guuid to the object
 
 sub new {
     my ($class,%args) = @_;
-    
+
     if ($args{ available } or !exists $args{ available }) {
         if (! $args{handle}) {
             $args{handle} = eval { WlanOpenHandle() };
@@ -219,7 +219,7 @@ L<http://msdn.microsoft.com/en-us/library/ms706274%28v=VS.85%29.aspx>
 
 =head1 REPOSITORY
 
-The public repository of this module is 
+The public repository of this module is
 L<http://github.com/Corion/Win32-Wlan>.
 
 =head1 SUPPORT
