@@ -10,7 +10,7 @@ use Win32::Wlan::API qw<
     $wlan_available
 >;
 use vars qw<$VERSION>;
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 # Ideally, the handle should be (another) singleton
 # that fetches and keeps the handle until the application

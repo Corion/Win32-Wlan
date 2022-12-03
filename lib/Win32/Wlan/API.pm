@@ -8,7 +8,7 @@ use Encode qw(decode);
 use Exporter 'import';
 
 use vars qw($VERSION $wlan_available %API @signatures @EXPORT_OK);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 # This is used to determine whether we have a 64bit Win32::API
 # or a 32bit Win32::API - a pointer is 8 or 4 bytes wide
