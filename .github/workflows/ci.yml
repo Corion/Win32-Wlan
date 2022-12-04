@@ -13,10 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [windows-latest]
-        perl: [ '5.30', '5.32', '5.34', '5.36' ]
-        exclude:
-          - runner: windows-latest
-            perl: '5.36'
+        perl: [ '5.30', '5.32' ] # It seems that perl 5.34 and 5.36 are not available
 
     runs-on: ${{matrix.runner}}
     name: OS ${{matrix.runner}} Perl ${{matrix.perl}}
